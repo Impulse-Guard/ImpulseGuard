@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 export interface StorageData {
   moneySaved: number;
   weeklySaved: number;
@@ -22,7 +24,7 @@ const DEFAULT_STORAGE: StorageData = {
  * Get all storage data
  */
 export async function getStorageData(): Promise<StorageData> {
-  const result = await chrome.storage.local.get(Object.keys(DEFAULT_STORAGE));
+  const result = await browser.storage.local.get(Object.keys(DEFAULT_STORAGE));
   return { ...DEFAULT_STORAGE, ...result } as StorageData;
 }
 
@@ -30,7 +32,7 @@ export async function getStorageData(): Promise<StorageData> {
  * Update storage with partial data
  */
 export async function updateStorage(updates: Partial<StorageData>): Promise<void> {
-  await chrome.storage.local.set(updates);
+  await browser.storage.local.set(updates);
 }
 
 /**
