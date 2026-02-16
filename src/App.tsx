@@ -1,7 +1,8 @@
 import { Button } from '@heroui/button';
 import { Card, CardBody, Tab, Tabs } from '@heroui/react';
 import { useState, useEffect } from 'react';
-import type { StorageData } from './storage';
+import type { StorageData } from './content/storage';
+import browser from 'webextension-polyfill';
 
 function App() {
   const [count, setCount] = useState(0);

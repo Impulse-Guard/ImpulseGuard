@@ -11,9 +11,10 @@
     "@heroui/react": "^2.8.8",
     "@heroui/system": "^2.4.26",
     "@heroui/theme": "^2.4.26",
-    "framer-motion": "^12.33.0",
+    "@types/webextension-polyfill": "^0.12.4",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",

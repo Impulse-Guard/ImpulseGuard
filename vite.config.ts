@@ -7,7 +7,7 @@ import tsconfigPaths from "vite-tsconfig-paths"
 export default defineConfig({
   base: './',
   define: {
-    'import.meta.env.CLAUDE_API_KEY': JSON.stringify(process.env.CLAUDE_API_KEY),
+    'import.meta.env.CLAUDE_API_KEY': JSON.stringify('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'),
   },
   plugins: [
     react(),
@@ -31,7 +31,6 @@ export default defineConfig({
       input: {
         popup: resolve(__dirname, 'popup.html'),
         content: resolve(__dirname, 'src/content/detector.ts'),
-        background: resolve(__dirname, 'src/background/service-worker.ts'),
       },
       output: {
         entryFileNames: '[name].js',
