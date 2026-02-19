@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin './hero.ts';
 /* Note: You may need to change the path to fit your project structure */
 @custom-variant dark (&:is(.dark *));
 
@@ -30,4 +29,3 @@
     --color-savings: #22c55e;
     --color-warning: #ef4444;
   }
-  
