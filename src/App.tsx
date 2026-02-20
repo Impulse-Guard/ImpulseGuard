@@ -85,38 +85,35 @@ function App() {
         <p className="text-xs opacity-80 mt-1">↑ ${weeklySaved.toFixed(2)} this week</p>
       </div>
 
-      <Tabs aria-label="Options" fullWidth className="mb-4">
-        <Tab key="stats" title="📊 Stats">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-primary">{blockedPurchases}</p>
-              <p className="text-xs text-text-muted mt-1">Blocked</p>
-            </div>
-            <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-gold">{impulsesResisted}</p>
-              <p className="text-xs text-text-muted mt-1">Resisted</p>
-            </div>
-            <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-savings">{successRate}%</p>
-              <p className="text-xs text-text-muted mt-1">Success</p>
-            </div>
-          </div>
-        </Tab>
-        <Tab key="pending" title="⏳ Pending">
-          <Card className="bg-background-muted border border-border">
-            <CardBody className="text-sm text-text-muted">
-              No pending purchases. You're doing great! 🎉
-            </CardBody>
-          </Card>
-        </Tab>
-      </Tabs>
+      {/* Stats - Temporary for new UI*/}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
+          <p className="text-2xl font-bold text-primary">{blockedPurchases}</p>
+          <p className="text-xs text-text-muted mt-1">Blocked</p>
+        </div>
+        <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
+          <p className="text-2xl font-bold text-gold">{impulsesResisted}</p>
+          <p className="text-xs text-text-muted mt-1">Resisted</p>
+        </div>
+        <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
+          <p className="text-2xl font-bold text-savings">{successRate}%</p>
+          <p className="text-xs text-text-muted mt-1">Success</p>
+        </div>
+      </div>
 
-      <Button
-        onPress={handleClick}
+      {/* Pending - Temporary for new UI */}
+      <div className="bg-background-muted border border-border rounded-xl p-3 mb-4">
+        <p className="text-sm text-text-muted">
+          No pending purchases. You're doing great! 🎉
+        </p>
+      </div>
+
+      <button
+        onClick={handleClick}
         className="w-full py-3 bg-gold hover:bg-tertiary text-secondary font-semibold rounded-lg transition-colors shadow-md"
       >
         View Savings Report
-      </Button>
+      </button>
 
       <p className="text-center mt-3 text-text-muted text-xs">
         Guarding since Jan 2025 • <span className="text-savings font-medium">{count} sessions</span>
