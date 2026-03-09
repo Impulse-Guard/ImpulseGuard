@@ -1,13 +1,16 @@
+import * as dotenv from 'dotenv';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { copyFileSync, cpSync, existsSync } from 'fs';
 import tsconfigPaths from "vite-tsconfig-paths"
 
+dotenv.config();
+
 export default defineConfig({
   base: './',
   define: {
-    'import.meta.env.CLAUDE_API_KEY': JSON.stringify('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'),
+    'import.meta.env.CLAUDE_API_KEY': JSON.stringify(process.env.CLAUDE_API_KEY),
   },
   plugins: [
     react(),
