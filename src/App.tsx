@@ -81,7 +81,7 @@ function App() {
 
       {/* Money saved card */}
       <Card size="3" style={{ background: 'linear-gradient(to bottom right, var(--green-10), var(--green-11))' }}>
-        <Flex direction="column" gap="1">
+        <Flex direction="column" align="center" gap="1">
           <Text size="1" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.8 }}>Money Saved</Text>
           <Text size="8" weight="bold" color="white">${moneySaved.toFixed(2)}</Text>
           <Text size="1" style={{ opacity: 0.8 }}>↑ ${weeklySaved.toFixed(2)} this week</Text>
