@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { StorageData } from './content/storage';
 import browser from 'webextension-polyfill';
+import { Button, Card, Text, Heading, Flex, Grid } from '@radix-ui/themes';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -71,54 +72,60 @@ function App() {
   };
 
   return (
-    <div className="w-80 p-5 bg-background">
-      {/* Header with gold accent */}
-      <div className="text-center mb-4">
-        <h1 className="text-2xl font-bold text-secondary">💰 Impulse Guard</h1>
-        <p className="text-xs text-text-muted mt-1">Protecting your wallet</p>
-      </div>
+    <Flex direction="column" gap="4" p="5" style={{ width: '320px' }}>
+      {/* Header */}
+      <Flex direction="column" align="center" gap="1">
+        <Heading size="6">💰 Impulse Guard</Heading>
+        <Text size="1" color="gray">Protecting your wallet</Text>
+      </Flex>
 
       {/* Money saved card */}
-      <div className="bg-linear-to-br from-primary to-primary-dark rounded-xl p-4 mb-4 text-white shadow-lg">
-        <p className="text-xs uppercase tracking-wide opacity-80">Money Saved</p>
-        <p className="text-3xl font-bold">${moneySaved.toFixed(2)}</p>
-        <p className="text-xs opacity-80 mt-1">↑ ${weeklySaved.toFixed(2)} this week</p>
-      </div>
+      <Card size="3" style={{ background: 'linear-gradient(to bottom right, var(--green-10), var(--green-11))' }}>
+        <Flex direction="column" gap="1">
+          <Text size="1" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.8 }}>Money Saved</Text>
+          <Text size="8" weight="bold" color="white">${moneySaved.toFixed(2)}</Text>
+          <Text size="1" style={{ opacity: 0.8 }}>↑ ${weeklySaved.toFixed(2)} this week</Text>
+        </Flex>
+      </Card>
 
-      {/* Stats - Temporary for new UI*/}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-primary">{blockedPurchases}</p>
-          <p className="text-xs text-text-muted mt-1">Blocked</p>
-        </div>
-        <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-gold">{impulsesResisted}</p>
-          <p className="text-xs text-text-muted mt-1">Resisted</p>
-        </div>
-        <div className="bg-background-muted border border-border rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-savings">{successRate}%</p>
-          <p className="text-xs text-text-muted mt-1">Success</p>
-        </div>
-      </div>
+      {/* Stats grid */}
+      <Grid columns="3" gap="3">
+        <Card>
+          <Flex direction="column" align="center" gap="1">
+            <Text size="6" weight="bold" color="amber">{blockedPurchases}</Text>
+            <Text size="1" color="gray">Blocked</Text>
+          </Flex>
+        </Card>
+        <Card>
+          <Flex direction="column" align="center" gap="1">
+            <Text size="6" weight="bold" color="yellow">{impulsesResisted}</Text>
+            <Text size="1" color="gray">Resisted</Text>
+          </Flex>
+        </Card>
+        <Card>
+          <Flex direction="column" align="center" gap="1">
+            <Text size="6" weight="bold" color="green">{successRate}%</Text>
+            <Text size="1" color="gray">Success</Text>
+          </Flex>
+        </Card>
+      </Grid>
 
-      {/* Pending - Temporary for new UI */}
-      <div className="bg-background-muted border border-border rounded-xl p-3 mb-4">
-        <p className="text-sm text-text-muted">
+      {/* Pending card */}
+      <Card>
+        <Text size="2" color="gray">
           No pending purchases. You're doing great! 🎉
-        </p>
-      </div>
+        </Text>
+      </Card>
 
-      <button
-        onClick={handleClick}
-        className="w-full py-3 bg-gold hover:bg-tertiary text-secondary font-semibold rounded-lg transition-colors shadow-md"
-      >
+      <Button size="3" onClick={handleClick}>
         View Savings Report
-      </button>
+      </Button>
 
-      <p className="text-center mt-3 text-text-muted text-xs">
-        Guarding since Jan 2025 • <span className="text-savings font-medium">{count} sessions</span>
-      </p>
-    </div>
+      <Flex align="center" justify="center" gap="1">
+        <Text size="1" color="gray">Guarding since Jan 2025 •</Text>
+        <Text size="1" color="green" weight="medium">{count} sessions</Text>
+      </Flex>
+    </Flex>
   );
 }
 
