@@ -11,9 +11,7 @@
   },
   "permissions": ["storage"],
   "host_permissions": ["https://api.anthropic.com/*"],
-  "background": {
-    "scripts": ["background.js"]
-  },
+
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -22,7 +20,6 @@
       "48": "static/icon48.png",
       "128": "static/icon128.png"
     }
-
   },
   "icons": {
     "16": "static/icon16.png",

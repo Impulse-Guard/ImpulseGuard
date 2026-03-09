@@ -1,12 +1,19 @@
-import { trackBlockedPurchase } from './storage';
-import { categorizePurchase } from '@/api/claude';
+import { trackBlockedPurchase } from "./storage";
+import { categorizePurchase } from "@/api/claude";
 
 const ADD_TO_CART_XPATH = '//*[@id="test"]/button';
 const PRODUCT_NAME_XPATH = '//*[@id="root"]/div/div[3]/main/section[2]/div/h1';
-const PRICE_XPATH = '//*[@id="root"]/div/div[3]/main/section[3]/div[1]/div/div[1]/div/span[1]/span';
+const PRICE_XPATH =
+  '//*[@id="root"]/div/div[3]/main/section[3]/div[1]/div/div[1]/div/span[1]/span';
 
 function getElementByXPath(xpath: string): Element | null {
-  const result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+  const result = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null,
+  );
   return result.singleNodeValue as Element | null;
 }
 
@@ -16,25 +23,25 @@ function getCurrentItemId(): string {
 
 function getProductName(): string {
   const nameEl = getElementByXPath(PRODUCT_NAME_XPATH);
-  return nameEl?.textContent?.trim() || document.title || 'Unknown Product';
+  return nameEl?.textContent?.trim() || document.title || "Unknown Product";
 }
 
 async function getItemPrice(): Promise<number> {
   const priceElement = getElementByXPath(PRICE_XPATH);
   if (priceElement) {
-    const priceText = priceElement.textContent || '0';
-    const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+    const priceText = priceElement.textContent || "0";
+    const price = parseFloat(priceText.replace(/[^0-9.]/g, ""));
     if (price > 0) return price;
   }
   return 0;
 }
 
 function showLoadingOverlay() {
-  const existing = document.getElementById('impulse-guard-overlay');
+  const existing = document.getElementById("impulse-guard-overlay");
   if (existing) existing.remove();
 
-  const overlay = document.createElement('div');
-  overlay.id = 'impulse-guard-overlay';
+  const overlay = document.createElement("div");
+  overlay.id = "impulse-guard-overlay";
   overlay.innerHTML = `
     <div style="
       position: fixed;
@@ -67,12 +74,16 @@ function showLoadingOverlay() {
   document.body.appendChild(overlay);
 }
 
-function showBlockedOverlay(itemPrice: number, isNewBlock: boolean, reason?: string) {
-  const existing = document.getElementById('impulse-guard-overlay');
+function showBlockedOverlay(
+  itemPrice: number,
+  isNewBlock: boolean,
+  reason?: string,
+) {
+  const existing = document.getElementById("impulse-guard-overlay");
   if (existing) existing.remove();
 
-  const overlay = document.createElement('div');
-  overlay.id = 'impulse-guard-overlay';
+  const overlay = document.createElement("div");
+  overlay.id = "impulse-guard-overlay";
   overlay.innerHTML = `
     <div style="
       position: fixed;
@@ -97,16 +108,24 @@ function showBlockedOverlay(itemPrice: number, isNewBlock: boolean, reason?: str
       ">
         <h2 style="color: #dc2626; margin: 0 0 16px; font-size: 24px;">🛑 Impulse Guard</h2>
         <p style="color: #1a1a1a; margin: 0 0 16px; font-size: 16px;">
-          ${isNewBlock
-            ? 'This looks like an impulse purchase.<br>Come back in <strong>24 hours</strong> if you still want it.'
-            : 'You already blocked this item!<br>Still want it? Come back in <strong>24 hours</strong>.'}
+          ${
+            isNewBlock
+              ? "This looks like an impulse purchase.<br>Come back in <strong>24 hours</strong> if you still want it."
+              : "You already blocked this item!<br>Still want it? Come back in <strong>24 hours</strong>."
+          }
         </p>
-        ${reason ? `
+        ${
+          reason
+            ? `
         <p style="color: #6b7280; margin: 0 0 16px; font-size: 14px; font-style: italic;">
           "${reason}"
         </p>
-        ` : ''}
-        ${itemPrice > 0 && isNewBlock ? `
+        `
+            : ""
+        }
+        ${
+          itemPrice > 0 && isNewBlock
+            ? `
         <div style="
           background: #dcfce7;
           padding: 12px;
@@ -117,7 +136,9 @@ function showBlockedOverlay(itemPrice: number, isNewBlock: boolean, reason?: str
             💰 You just saved $${itemPrice.toFixed(2)}!
           </p>
         </div>
-        ` : ''}
+        `
+            : ""
+        }
         <button id="impulse-guard-close" style="
           background: #16a34a;
           color: white;
@@ -133,13 +154,15 @@ function showBlockedOverlay(itemPrice: number, isNewBlock: boolean, reason?: str
 
   document.body.appendChild(overlay);
 
-  document.getElementById('impulse-guard-close')?.addEventListener('click', () => {
-    overlay.remove();
-  });
+  document
+    .getElementById("impulse-guard-close")
+    ?.addEventListener("click", () => {
+      overlay.remove();
+    });
 }
 
 function removeOverlay() {
-  const existing = document.getElementById('impulse-guard-overlay');
+  const existing = document.getElementById("impulse-guard-overlay");
   if (existing) existing.remove();
 }
 
@@ -149,15 +172,15 @@ let blockerDiv: HTMLDivElement | null = null;
 function createBlockerDiv() {
   const button = getElementByXPath(ADD_TO_CART_XPATH) as HTMLElement;
   if (!button) {
-    console.log('[Impulse Guard] Button not found, retrying...');
+    console.log("[Impulse Guard] Button not found, retrying...");
     setTimeout(createBlockerDiv, 1000);
     return;
   }
 
   const rect = button.getBoundingClientRect();
 
-  blockerDiv = document.createElement('div');
-  blockerDiv.id = 'impulse-guard-blocker';
+  blockerDiv = document.createElement("div");
+  blockerDiv.id = "impulse-guard-blocker";
   blockerDiv.style.cssText = `
     position: fixed;
     top: ${rect.top}px;
@@ -169,13 +192,13 @@ function createBlockerDiv() {
     cursor: pointer;
   `;
 
-  blockerDiv.addEventListener('click', handleBlockerClick);
+  blockerDiv.addEventListener("click", handleBlockerClick);
   document.body.appendChild(blockerDiv);
 
-  window.addEventListener('scroll', updateBlockerPosition);
-  window.addEventListener('resize', updateBlockerPosition);
+  window.addEventListener("scroll", updateBlockerPosition);
+  window.addEventListener("resize", updateBlockerPosition);
 
-  console.log('[Impulse Guard] Blocker div installed');
+  console.log("[Impulse Guard] Blocker div installed");
 }
 
 function updateBlockerPosition() {
@@ -194,9 +217,9 @@ function removeBlockerDiv() {
   if (blockerDiv) {
     blockerDiv.remove();
     blockerDiv = null;
-    window.removeEventListener('scroll', updateBlockerPosition);
-    window.removeEventListener('resize', updateBlockerPosition);
-    console.log('[Impulse Guard] Blocker div removed');
+    window.removeEventListener("scroll", updateBlockerPosition);
+    window.removeEventListener("resize", updateBlockerPosition);
+    console.log("[Impulse Guard] Blocker div removed");
   }
 }
 
@@ -211,9 +234,11 @@ async function handleBlockerClick() {
 
   try {
     const result = await categorizePurchase(productName, itemPrice);
-    console.log(`[Impulse Guard] Result: ${result.category} - ${result.reason}`);
+    console.log(
+      `[Impulse Guard] Result: ${result.category} - ${result.reason}`,
+    );
 
-    if (result.category === 'normal') {
+    if (result.category === "normal") {
       // Remove blocker - user can now click the real button
       removeOverlay();
       removeBlockerDiv();
@@ -224,13 +249,13 @@ async function handleBlockerClick() {
       showBlockedOverlay(itemPrice, isNewBlock, result.reason);
     }
   } catch (e) {
-    console.error('[Impulse Guard] Error:', e);
+    console.error("[Impulse Guard] Error:", e);
     removeOverlay();
   }
 }
 
 function showApprovedToast() {
-  const toast = document.createElement('div');
+  const toast = document.createElement("div");
   toast.innerHTML = `
     <div style="
       position: fixed;
@@ -255,4 +280,4 @@ function showApprovedToast() {
 // Install blocker after page loads
 setTimeout(createBlockerDiv, 1000);
 
-console.log('[Impulse Guard] Content script loaded');
+console.log("[Impulse Guard] Content script loaded");
