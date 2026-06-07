@@ -1,4 +1,4 @@
-import { trackBlockedPurchase } from "./storage";
+import { trackBlockedPurchase, BLOCK_DURATION_MS } from "./storage";
 import { categorizePurchase } from "@/api/claude";
 
 const ADD_TO_CART_XPATH = '//*[@id="test"]/button';
@@ -74,13 +74,25 @@ function showLoadingOverlay() {
   document.body.appendChild(overlay);
 }
 
+function formatTimeRemaining(blockedAt: number): string {
+  const remainingMs = BLOCK_DURATION_MS - (Date.now() - blockedAt);
+  if (remainingMs <= 0) return "less than a minute";
+  const hours = Math.floor(remainingMs / (60 * 60 * 1000));
+  const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+}
+
 function showBlockedOverlay(
   itemPrice: number,
   isNewBlock: boolean,
+  blockedAt: number,
   reason?: string,
 ) {
   const existing = document.getElementById("impulse-guard-overlay");
   if (existing) existing.remove();
+
+  const timeRemaining = formatTimeRemaining(blockedAt);
 
   const overlay = document.createElement("div");
   overlay.id = "impulse-guard-overlay";
@@ -110,8 +122,8 @@ function showBlockedOverlay(
         <p style="color: #1a1a1a; margin: 0 0 16px; font-size: 16px;">
           ${
             isNewBlock
-              ? "This looks like an impulse purchase.<br>Come back in <strong>24 hours</strong> if you still want it."
-              : "You already blocked this item!<br>Still want it? Come back in <strong>24 hours</strong>."
+              ? `This looks like an impulse purchase.<br>Come back in <strong>${timeRemaining}</strong> if you still want it.`
+              : `You already blocked this item!<br>Still want it? Come back in <strong>${timeRemaining}</strong>.`
           }
         </p>
         ${
@@ -245,8 +257,8 @@ async function handleBlockerClick() {
       showApprovedToast();
     } else {
       // Block wasteful purchase
-      const isNewBlock = await trackBlockedPurchase(itemPrice, itemId);
-      showBlockedOverlay(itemPrice, isNewBlock, result.reason);
+      const { isNewBlock, blockedAt } = await trackBlockedPurchase(itemPrice, itemId);
+      showBlockedOverlay(itemPrice, isNewBlock, blockedAt, result.reason);
     }
   } catch (e) {
     console.error("[Impulse Guard] Error:", e);
