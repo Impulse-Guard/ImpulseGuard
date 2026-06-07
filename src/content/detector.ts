@@ -3,8 +3,7 @@ import { categorizePurchase } from "@/api/claude";
 
 const ADD_TO_CART_XPATH = '//*[@id="test"]/button';
 const PRODUCT_NAME_XPATH = '//*[@id="root"]/div/div[3]/main/section[2]/div/h1';
-const PRICE_XPATH =
-  '//*[@id="root"]/div/div[3]/main/section[3]/div[1]/div/div[1]/div/span[1]/span';
+const PRICE_XPATH = '//*[@id="root"]/div/div[3]/main/section[3]/div[1]/div/div[1]/div/span[1]/span';
 
 function getElementByXPath(xpath: string): Element | null {
   const result = document.evaluate(
@@ -12,7 +11,7 @@ function getElementByXPath(xpath: string): Element | null {
     document,
     null,
     XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null,
+    null
   );
   return result.singleNodeValue as Element | null;
 }
@@ -74,11 +73,7 @@ function showLoadingOverlay() {
   document.body.appendChild(overlay);
 }
 
-function showBlockedOverlay(
-  itemPrice: number,
-  isNewBlock: boolean,
-  reason?: string,
-) {
+function showBlockedOverlay(itemPrice: number, isNewBlock: boolean, reason?: string) {
   const existing = document.getElementById("impulse-guard-overlay");
   if (existing) existing.remove();
 
@@ -154,11 +149,9 @@ function showBlockedOverlay(
 
   document.body.appendChild(overlay);
 
-  document
-    .getElementById("impulse-guard-close")
-    ?.addEventListener("click", () => {
-      overlay.remove();
-    });
+  document.getElementById("impulse-guard-close")?.addEventListener("click", () => {
+    overlay.remove();
+  });
 }
 
 function removeOverlay() {
@@ -234,9 +227,7 @@ async function handleBlockerClick() {
 
   try {
     const result = await categorizePurchase(productName, itemPrice);
-    console.log(
-      `[Impulse Guard] Result: ${result.category} - ${result.reason}`,
-    );
+    console.log(`[Impulse Guard] Result: ${result.category} - ${result.reason}`);
 
     if (result.category === "normal") {
       // Remove blocker - user can now click the real button

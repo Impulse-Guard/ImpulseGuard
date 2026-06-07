@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build"
+    "build": "vite build",
+    "lint": "eslint src",
+    "format": "prettier --write src"
   },
   "dependencies": {
     "@radix-ui/themes": "^3.3.0",
@@ -15,6 +17,7 @@
     "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/chrome": "^0.1.37",
     "@types/node": "^25.3.5",
@@ -22,9 +25,15 @@
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.24",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "postcss": "^8.5.6",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.4.5",
+    "typescript-eslint": "^8.60.1",
     "vite": "^5.4.21",
     "vite-tsconfig-paths": "^6.1.0"
   }
