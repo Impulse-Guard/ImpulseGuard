@@ -9,7 +9,10 @@
       "strict_min_version": "109.0"
     }
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "host_permissions": ["https://api.anthropic.com/*"],
 
   "action": {

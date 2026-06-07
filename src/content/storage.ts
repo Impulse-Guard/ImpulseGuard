@@ -6,6 +6,13 @@ export interface StorageData {
   impulsesResisted: number;
   blockedItems: Record<string, number>; // itemId -> timestamp when blocked
   count: number;
+  onboardingComplete: boolean;
+  userProfile: {
+    spendingChallenge: string;
+    monthlySavingsGoal: string;
+    financialGoal: string;
+  } | null;
+  accountabilityBuddy: { name: string; email: string } | null;
 }
 
 export const BLOCK_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -17,7 +24,10 @@ const DEFAULT_STORAGE: StorageData = {
   totalImpulses: 0,
   impulsesResisted: 0,
   blockedItems: {},
-  count: 0
+  count: 0,
+  onboardingComplete: false,
+  userProfile: null,
+  accountabilityBuddy: null,
 };
 
 export async function getStorageData(): Promise<StorageData> {
