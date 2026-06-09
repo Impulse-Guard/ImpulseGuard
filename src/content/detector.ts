@@ -1,5 +1,9 @@
-import { trackBlockedPurchase } from "./storage";
-import { categorizePurchase } from "@/api/claude";
+import { trackBlockedPurchase, getStorageData } from "./storage";
+import {
+  categorizePurchase,
+  type ProductContext,
+  type UserFinancialContext,
+} from "@/api/claude";
 import { getSiteConfig, type SiteConfig } from "./sites";
 import {
   showLoadingOverlay,
@@ -158,6 +162,108 @@ function getItemPrice(): number {
   return 0;
 }
 
+// --- Extra product context (description / category / brand) ---------------
+
+const MAX_DESCRIPTION_LENGTH = 500;
+
+/** Returns the first schema.org Product node found in JSON-LD, if any. */
+function productNodeFromJsonLd(): any | null {
+  const scripts = document.querySelectorAll<HTMLScriptElement>(
+    'script[type="application/ld+json"]',
+  );
+  for (const script of scripts) {
+    try {
+      const parsed = JSON.parse(script.textContent || "null");
+      for (const node of Array.isArray(parsed) ? parsed : [parsed]) {
+        if (!node) continue;
+        const type = node["@type"];
+        const isProduct = Array.isArray(type)
+          ? type.includes("Product")
+          : type === "Product";
+        if (isProduct || node.offers) return node;
+      }
+    } catch {
+      // Ignore malformed JSON-LD blocks.
+    }
+  }
+  return null;
+}
+
+function getProductDescription(jsonLd: any): string | undefined {
+  const candidates = [
+    typeof jsonLd?.description === "string" ? jsonLd.description : undefined,
+    document
+      .querySelector('meta[property="og:description"]')
+      ?.getAttribute("content"),
+    document
+      .querySelector('meta[name="description"]')
+      ?.getAttribute("content"),
+  ];
+  for (const raw of candidates) {
+    const text = raw?.replace(/\s+/g, " ").trim();
+    if (text) return text.slice(0, MAX_DESCRIPTION_LENGTH);
+  }
+  return undefined;
+}
+
+function getBrand(jsonLd: any): string | undefined {
+  const brand = jsonLd?.brand;
+  const fromJsonLd =
+    typeof brand === "string" ? brand : (brand?.name as string | undefined);
+  const candidates = [
+    fromJsonLd,
+    document
+      .querySelector('meta[property="product:brand"]')
+      ?.getAttribute("content"),
+    document.querySelector('[itemprop="brand"]')?.getAttribute("content") ||
+      document.querySelector('[itemprop="brand"]')?.textContent,
+  ];
+  for (const raw of candidates) {
+    const text = raw?.trim();
+    if (text) return text;
+  }
+  return undefined;
+}
+
+function getCategory(jsonLd: any): string | undefined {
+  if (typeof jsonLd?.category === "string" && jsonLd.category.trim()) {
+    return jsonLd.category.trim();
+  }
+
+  // Fall back to the page breadcrumb trail.
+  const crumbs = Array.from(
+    document.querySelectorAll(
+      '[itemtype*="BreadcrumbList"] [itemprop="name"], nav[aria-label*="readcrumb" i] a, .breadcrumb a, ol.breadcrumb li',
+    ),
+  )
+    .map((el) => el.textContent?.trim())
+    .filter((t): t is string => !!t && t.toLowerCase() !== "home");
+  if (crumbs.length) return crumbs.join(" > ").slice(0, MAX_DESCRIPTION_LENGTH);
+
+  return undefined;
+}
+
+function getProductContext(): ProductContext {
+  const jsonLd = productNodeFromJsonLd();
+  return {
+    name: getProductName(),
+    price: getItemPrice(),
+    description: getProductDescription(jsonLd),
+    category: getCategory(jsonLd),
+    brand: getBrand(jsonLd),
+  };
+}
+
+async function getUserContext(): Promise<UserFinancialContext> {
+  const data = await getStorageData();
+  return {
+    totalSaved: data.moneySaved,
+    weeklySaved: data.weeklySaved,
+    impulsesResisted: data.impulsesResisted,
+    blockedPurchases: data.blockedPurchases,
+  };
+}
+
 function getCurrentItemId(): string {
   return window.location.href;
 }
@@ -229,16 +335,17 @@ function removeBlockerDiv() {
 async function handleBlockerClick() {
   showLoadingOverlay();
 
-  const productName = getProductName();
-  const itemPrice = getItemPrice();
+  const product = getProductContext();
+  const itemPrice = product.price ?? 0;
   const itemId = getCurrentItemId();
 
-  console.log(`[Impulse Guard] Checking: "${productName}" ($${itemPrice})`);
+  console.log(`[Impulse Guard] Checking: "${product.name}" ($${itemPrice})`);
 
   try {
-    const result = await categorizePurchase(productName, itemPrice);
+    const userContext = await getUserContext();
+    const result = await categorizePurchase(product, userContext);
     console.log(
-      `[Impulse Guard] Result: ${result.category} - ${result.reason}`,
+      `[Impulse Guard] Result: ${result.category} (${result.severity ?? "?"}, ${Math.round((result.confidence ?? 0) * 100)}%) - ${result.reason}`,
     );
 
     if (result.category === "normal") {
@@ -249,7 +356,7 @@ async function handleBlockerClick() {
     } else {
       // Block wasteful purchase
       const isNewBlock = await trackBlockedPurchase(itemPrice, itemId);
-      showBlockedOverlay(itemPrice, isNewBlock, result.reason);
+      showBlockedOverlay(itemPrice, isNewBlock, result);
     }
   } catch (e) {
     console.error("[Impulse Guard] Error:", e);
