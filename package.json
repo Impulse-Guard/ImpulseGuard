@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build"
+    "dev": "vite build --watch & BUILD_TARGET=content vite build --watch",
+    "build": "vite build && BUILD_TARGET=content vite build",
+    "build:content": "BUILD_TARGET=content vite build"
   },
   "dependencies": {
     "@radix-ui/themes": "^3.3.0",
