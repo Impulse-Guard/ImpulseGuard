@@ -29,7 +29,23 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.bestbuy.ca/*"],
+      "matches": [
+        "*://*.amazon.com/*",
+        "*://*.amazon.ca/*",
+        "*://*.amazon.co.uk/*",
+        "*://*.amazon.de/*",
+        "*://*.ebay.com/*",
+        "*://*.ebay.ca/*",
+        "*://*.ebay.co.uk/*",
+        "*://*.walmart.com/*",
+        "*://*.walmart.ca/*",
+        "*://*.target.com/*",
+        "*://*.bestbuy.com/*",
+        "*://*.bestbuy.ca/*",
+        "*://*.newegg.com/*",
+        "*://*.newegg.ca/*",
+        "*://*.etsy.com/*"
+      ],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
