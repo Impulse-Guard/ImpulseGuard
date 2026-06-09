@@ -8,6 +8,7 @@
  */
 
 import { color, font, gradient, radius, shadow, space } from "@/design/tokens";
+import type { CategorizationResult } from "@/api/claude";
 
 const OVERLAY_ID = "impulse-guard-overlay";
 
@@ -70,11 +71,25 @@ export function showLoadingOverlay() {
   document.body.appendChild(overlay);
 }
 
+/** Maps an impulse severity to a short labelled badge. */
+const SEVERITY_LABEL: Record<string, string> = {
+  low: "Low impulse risk",
+  medium: "Medium impulse risk",
+  high: "High impulse risk",
+};
+
+/** Escapes text destined for innerHTML so scraped/model text can't inject markup. */
+function escapeHtml(text: string): string {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 /** Modal shown when a purchase is blocked. Returns once the user dismisses it. */
 export function showBlockedOverlay(
   itemPrice: number,
   isNewBlock: boolean,
-  reason?: string,
+  result?: CategorizationResult,
 ) {
   clearOverlay();
 
@@ -85,8 +100,29 @@ export function showBlockedOverlay(
     ? "This looks like an impulse purchase.<br>Come back in <strong>24 hours</strong> if you still want it."
     : "You already blocked this item!<br>Still want it? Come back in <strong>24 hours</strong>.";
 
+  const reason = result?.reason;
   const reasonBlock = reason
-    ? `<p style="${RESET} color: ${color.textMuted}; font-size: 14px; font-style: italic; margin-bottom: ${space.lg};">&ldquo;${reason}&rdquo;</p>`
+    ? `<p style="${RESET} color: ${color.textMuted}; font-size: 14px; font-style: italic; margin-bottom: ${space.lg};">&ldquo;${escapeHtml(reason)}&rdquo;</p>`
+    : "";
+
+  const severityLabel = result?.severity && SEVERITY_LABEL[result.severity];
+  const confidencePct =
+    result?.confidence != null ? Math.round(result.confidence * 100) : null;
+  const badgeText = [
+    severityLabel,
+    confidencePct != null ? `${confidencePct}% sure` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const badgeBlock = badgeText
+    ? `<p style="${RESET} display: inline-block; color: ${color.danger}; background: ${color.background}; border: 1px solid ${color.border}; padding: ${space.xs} ${space.md}; border-radius: ${radius.sm}; font-size: 12px; font-weight: 600; margin-bottom: ${space.lg};">${escapeHtml(badgeText)}</p>`
+    : "";
+
+  const alternativeBlock = result?.alternative
+    ? `<div style="${RESET} background: ${color.savingsSoft}; padding: ${space.md}; border-radius: ${radius.md}; margin-bottom: ${space.lg}; text-align: left;">
+         <p style="${RESET} color: ${color.primaryDark}; font-weight: 600; font-size: 13px; margin-bottom: ${space.xs};">💡 Consider this instead</p>
+         <p style="${RESET} color: ${color.text}; font-size: 14px; line-height: 1.4;">${escapeHtml(result.alternative)}</p>
+       </div>`
     : "";
 
   const savingsBlock =
@@ -106,7 +142,9 @@ export function showBlockedOverlay(
     <p style="${RESET} color: ${color.text}; font-size: 15px; line-height: 1.5; margin-bottom: ${space.lg};">
       ${message}
     </p>
+    ${badgeBlock}
     ${reasonBlock}
+    ${alternativeBlock}
     ${savingsBlock}
     <button id="impulse-guard-close" style="
       ${RESET}
