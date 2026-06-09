@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { StorageData } from './content/storage';
 import browser from 'webextension-polyfill';
 import { Button, Card, Text, Heading, Flex, Grid } from '@radix-ui/themes';
+import { color, gradient, radius, shadow } from './design/tokens';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -75,55 +76,55 @@ function App() {
     <Flex direction="column" gap="4" p="5" style={{ width: '320px' }}>
       {/* Header */}
       <Flex direction="column" align="center" gap="1">
-        <Heading size="6">💰 Impulse Guard</Heading>
-        <Text size="1" color="gray">Protecting your wallet</Text>
+        <Heading size="6" style={{ color: color.primaryDeep }}>💰 Impulse Guard</Heading>
+        <Text size="1" style={{ color: color.textMuted }}>Protecting your wallet</Text>
       </Flex>
 
       {/* Money saved card */}
-      <Card size="3" style={{ background: 'linear-gradient(to bottom right, var(--green-10), var(--green-11))' }}>
+      <Card size="3" style={{ background: gradient.cash, boxShadow: shadow.card }}>
         <Flex direction="column" align="center" gap="1">
-          <Text size="1" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.8 }}>Money Saved</Text>
-          <Text size="8" weight="bold" color="white">${moneySaved.toFixed(2)}</Text>
-          <Text size="1" style={{ opacity: 0.8 }}>↑ ${weeklySaved.toFixed(2)} this week</Text>
+          <Text size="1" style={{ color: 'white', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.85 }}>Money Saved</Text>
+          <Text size="8" weight="bold" style={{ color: 'white' }}>${moneySaved.toFixed(2)}</Text>
+          <Text size="1" style={{ color: 'white', opacity: 0.85 }}>↑ ${weeklySaved.toFixed(2)} this week</Text>
         </Flex>
       </Card>
 
       {/* Stats grid */}
       <Grid columns="3" gap="3">
-        <Card>
+        <Card style={{ boxShadow: shadow.card }}>
           <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="amber">{blockedPurchases}</Text>
-            <Text size="1" color="gray">Blocked</Text>
+            <Text size="6" weight="bold" style={{ color: color.primary }}>{blockedPurchases}</Text>
+            <Text size="1" style={{ color: color.textMuted }}>Blocked</Text>
           </Flex>
         </Card>
-        <Card>
+        <Card style={{ boxShadow: shadow.card }}>
           <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="yellow">{impulsesResisted}</Text>
-            <Text size="1" color="gray">Resisted</Text>
+            <Text size="6" weight="bold" style={{ color: color.gold }}>{impulsesResisted}</Text>
+            <Text size="1" style={{ color: color.textMuted }}>Resisted</Text>
           </Flex>
         </Card>
-        <Card>
+        <Card style={{ boxShadow: shadow.card }}>
           <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="green">{successRate}%</Text>
-            <Text size="1" color="gray">Success</Text>
+            <Text size="6" weight="bold" style={{ color: color.primary }}>{successRate}%</Text>
+            <Text size="1" style={{ color: color.textMuted }}>Success</Text>
           </Flex>
         </Card>
       </Grid>
 
       {/* Pending card */}
-      <Card>
-        <Text size="2" color="gray">
+      <Card style={{ background: color.backgroundMuted, borderRadius: radius.md }}>
+        <Text size="2" style={{ color: color.textMuted }}>
           No pending purchases. You're doing great! 🎉
         </Text>
       </Card>
 
-      <Button size="3" onClick={handleClick}>
+      <Button size="3" color="green" onClick={handleClick}>
         View Savings Report
       </Button>
 
       <Flex align="center" justify="center" gap="1">
-        <Text size="1" color="gray">Guarding since Jan 2025 •</Text>
-        <Text size="1" color="green" weight="medium">{count} sessions</Text>
+        <Text size="1" style={{ color: color.textMuted }}>Guarding since Jan 2025 •</Text>
+        <Text size="1" weight="medium" style={{ color: color.primary }}>{count} sessions</Text>
       </Flex>
     </Flex>
   );

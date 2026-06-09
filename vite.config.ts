@@ -7,6 +7,13 @@ import tsconfigPaths from "vite-tsconfig-paths"
 
 dotenv.config();
 
+// The content script is injected into pages as a classic script (MV3 content
+// scripts don't support ES modules), so it must be a single self-contained
+// file. We build it in its own pass (BUILD_TARGET=content) with
+// inlineDynamicImports so shared modules like the design tokens are bundled in
+// rather than split into a separate chunk it can't import at runtime.
+const isContentBuild = process.env.BUILD_TARGET === 'content';
+
 export default defineConfig({
   base: './',
   define: {
@@ -18,6 +25,9 @@ export default defineConfig({
     {
       name: 'copy-extension-files',
       closeBundle() {
+        // Only the popup pass copies static assets; the content pass appends to
+        // the same dist/ without emptying it.
+        if (isContentBuild) return;
         copyFileSync('manifest.json', 'dist/manifest.json');
         if (existsSync('static')) cpSync('static', 'dist/static', { recursive: true });
       },
@@ -30,16 +40,23 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      input: {
-        popup: resolve(__dirname, 'popup.html'),
-        content: resolve(__dirname, 'src/content/detector.ts'),
-      },
-      output: {
-        entryFileNames: '[name].js',
-        chunkFileNames: '[name].js',
-        assetFileNames: '[name].[ext]',
-      },
-    },
+    emptyOutDir: !isContentBuild,
+    rollupOptions: isContentBuild
+      ? {
+          input: { content: resolve(__dirname, 'src/content/detector.ts') },
+          output: {
+            inlineDynamicImports: true,
+            entryFileNames: '[name].js',
+            assetFileNames: '[name].[ext]',
+          },
+        }
+      : {
+          input: { popup: resolve(__dirname, 'popup.html') },
+          output: {
+            entryFileNames: '[name].js',
+            chunkFileNames: '[name].js',
+            assetFileNames: '[name].[ext]',
+          },
+        },
   },
 });
