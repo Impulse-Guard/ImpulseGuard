@@ -1,5 +1,57 @@
 import { trackBlockedPurchase } from "./storage";
 import { categorizePurchase } from "@/api/claude";
+import { color, font, radius } from "@/design/tokens";
+
+// Shared style fragments for the injected overlays (kept as plain strings so
+// they can be interpolated into the double-quoted style attributes below).
+const BACKDROP_STYLE = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: ${color.backdrop};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+`;
+
+const CARD_STYLE = `
+  background: ${color.background};
+  padding: 28px 32px;
+  border-radius: ${radius.card};
+  border: 1px solid ${color.rail};
+  max-width: 420px;
+  text-align: left;
+  font-family: ${font.sans};
+  color: ${color.ink};
+  box-shadow: 0 24px 48px rgba(10, 10, 10, 0.25);
+`;
+
+const EYEBROW_STYLE = `
+  margin: 0 0 10px;
+  font-family: ${font.mono};
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: ${color.amber};
+`;
+
+const PILL_BUTTON_STYLE = `
+  width: 100%;
+  padding: 13px 24px;
+  border: none;
+  border-radius: 9999px;
+  background: ${color.ink};
+  color: ${color.background};
+  font-family: ${font.mono};
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+`;
 
 const ADD_TO_CART_XPATH = '//*[@id="test"]/button';
 const PRODUCT_NAME_XPATH = '//*[@id="root"]/div/div[3]/main/section[2]/div/h1';
@@ -43,31 +95,20 @@ function showLoadingOverlay() {
   const overlay = document.createElement("div");
   overlay.id = "impulse-guard-overlay";
   overlay.innerHTML = `
-    <div style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999999;
-    ">
-      <div style="
-        background: #fefdf8;
-        padding: 32px;
-        border-radius: 16px;
-        max-width: 400px;
-        text-align: center;
-        font-family: system-ui, sans-serif;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      ">
-        <h2 style="color: #16a34a; margin: 0 0 16px; font-size: 24px;">🤔 Analyzing...</h2>
-        <p style="color: #1a1a1a; margin: 0; font-size: 16px;">
-          Checking if this is an impulse purchase...
-        </p>
+    <div style="${BACKDROP_STYLE}">
+      <div style="${CARD_STYLE}">
+        <p style="${EYEBROW_STYLE}">[ Impulse Guard ]</p>
+        <h2 style="margin: 0 0 8px; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">
+          Checking this purchase.
+        </h2>
+        <p style="
+          margin: 0;
+          font-family: ${font.mono};
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          color: ${color.muted};
+        ">Analyzing&hellip;</p>
       </div>
     </div>
   `;
@@ -85,39 +126,23 @@ function showBlockedOverlay(
   const overlay = document.createElement("div");
   overlay.id = "impulse-guard-overlay";
   overlay.innerHTML = `
-    <div style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999999;
-    ">
-      <div style="
-        background: #fefdf8;
-        padding: 32px;
-        border-radius: 16px;
-        max-width: 400px;
-        text-align: center;
-        font-family: system-ui, sans-serif;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      ">
-        <h2 style="color: #dc2626; margin: 0 0 16px; font-size: 24px;">🛑 Impulse Guard</h2>
-        <p style="color: #1a1a1a; margin: 0 0 16px; font-size: 16px;">
+    <div style="${BACKDROP_STYLE}">
+      <div style="${CARD_STYLE}">
+        <p style="${EYEBROW_STYLE}">[ Impulse Guard ]</p>
+        <h2 style="margin: 0 0 12px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;">
+          Hold on. <span style="color: ${color.amber};">That looks like an impulse.</span>
+        </h2>
+        <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.5;">
           ${
             isNewBlock
-              ? "This looks like an impulse purchase.<br>Come back in <strong>24 hours</strong> if you still want it."
-              : "You already blocked this item!<br>Still want it? Come back in <strong>24 hours</strong>."
+              ? "Come back in <strong>24 hours</strong> if you still want it."
+              : "You already blocked this item. Still want it? Come back in <strong>24 hours</strong>."
           }
         </p>
         ${
           reason
             ? `
-        <p style="color: #6b7280; margin: 0 0 16px; font-size: 14px; font-style: italic;">
+        <p style="margin: 0 0 16px; font-size: 13px; font-style: italic; color: ${color.muted};">
           "${reason}"
         </p>
         `
@@ -127,27 +152,27 @@ function showBlockedOverlay(
           itemPrice > 0 && isNewBlock
             ? `
         <div style="
-          background: #dcfce7;
-          padding: 12px;
-          border-radius: 8px;
+          background: ${color.amberTint};
+          padding: 12px 16px;
+          border-radius: 12px;
           margin-bottom: 16px;
         ">
-          <p style="margin: 0; color: #16a34a; font-weight: bold; font-size: 18px;">
-            💰 You just saved $${itemPrice.toFixed(2)}!
+          <p style="
+            margin: 0 0 2px;
+            font-family: ${font.mono};
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: ${color.amber};
+          ">[ You just saved ]</p>
+          <p style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">
+            $${itemPrice.toFixed(2)}
           </p>
         </div>
         `
             : ""
         }
-        <button id="impulse-guard-close" style="
-          background: #16a34a;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 16px;
-          cursor: pointer;
-        ">I understand</button>
+        <button id="impulse-guard-close" style="${PILL_BUTTON_STYLE}">I understand</button>
       </div>
     </div>
   `;
@@ -261,16 +286,19 @@ function showApprovedToast() {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #16a34a;
-      color: white;
-      padding: 16px 24px;
-      border-radius: 8px;
-      font-family: system-ui, sans-serif;
-      font-size: 16px;
+      background: ${color.ink};
+      color: ${color.background};
+      padding: 14px 22px;
+      border-radius: 9999px;
+      font-family: ${font.mono};
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       z-index: 999999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 12px 24px rgba(10, 10, 10, 0.25);
     ">
-      ✅ Approved! Click the button again to purchase.
+      <span style="color: ${color.amberBright};">✓</span> Approved — click again to buy
     </div>
   `;
   document.body.appendChild(toast);
