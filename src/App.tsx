@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { StorageData } from './content/storage';
 import browser from 'webextension-polyfill';
-import { Button, Card, Text, Heading, Flex, Grid } from '@radix-ui/themes';
+
+// Decorative mono glyph strip, à la tday.com section dividers.
+const GLYPHS = '·:|>*0/·=1·<=|>/|·*|<>0|:/<=:>0*0><0|:/';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,15 +14,15 @@ function App() {
   const [impulsesResisted, setImpulsesResisted] = useState(0);
 
   // Calculate success rate
-  const successRate = totalImpulses > 0 
-    ? Math.round((blockedPurchases / totalImpulses) * 100) 
+  const successRate = totalImpulses > 0
+    ? Math.round((blockedPurchases / totalImpulses) * 100)
     : 0;
 
   // Load data from storage on mount
   useEffect(() => {
     browser.storage.local.get([
-      'count', 
-      'moneySaved', 
+      'count',
+      'moneySaved',
       'weeklySaved',
       'blockedPurchases',
       'totalImpulses',
@@ -72,60 +74,51 @@ function App() {
   };
 
   return (
-    <Flex direction="column" gap="4" p="5" style={{ width: '320px' }}>
-      {/* Header */}
-      <Flex direction="column" align="center" gap="1">
-        <Heading size="6">💰 Impulse Guard</Heading>
-        <Text size="1" color="gray">Protecting your wallet</Text>
-      </Flex>
+    <div className="ig-popup">
+      <header className="ig-header">
+        <div className="ig-brand">
+          <span className="ig-chip">$</span>
+          <span className="ig-wordmark">impulse guard</span>
+        </div>
+        <span className="ig-status">● Active</span>
+      </header>
 
-      {/* Money saved card */}
-      <Card size="3" style={{ background: 'linear-gradient(to bottom right, var(--green-10), var(--green-11))' }}>
-        <Flex direction="column" align="center" gap="1">
-          <Text size="1" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.8 }}>Money Saved</Text>
-          <Text size="8" weight="bold" color="white">${moneySaved.toFixed(2)}</Text>
-          <Text size="1" style={{ opacity: 0.8 }}>↑ ${weeklySaved.toFixed(2)} this week</Text>
-        </Flex>
-      </Card>
+      <section className="ig-hero">
+        <p className="ig-eyebrow">[ Money saved ]</p>
+        <p className="ig-figure">${moneySaved.toFixed(2)}</p>
+        <p className="ig-weekly">
+          <span className="ig-weekly-up">↑ ${weeklySaved.toFixed(2)}</span> this week
+        </p>
+      </section>
 
-      {/* Stats grid */}
-      <Grid columns="3" gap="3">
-        <Card>
-          <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="amber">{blockedPurchases}</Text>
-            <Text size="1" color="gray">Blocked</Text>
-          </Flex>
-        </Card>
-        <Card>
-          <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="yellow">{impulsesResisted}</Text>
-            <Text size="1" color="gray">Resisted</Text>
-          </Flex>
-        </Card>
-        <Card>
-          <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="green">{successRate}%</Text>
-            <Text size="1" color="gray">Success</Text>
-          </Flex>
-        </Card>
-      </Grid>
+      <section className="ig-stats">
+        <div className="ig-stat">
+          <span className="ig-stat-value">{blockedPurchases}</span>
+          <span className="ig-stat-label">Blocked</span>
+        </div>
+        <div className="ig-stat">
+          <span className="ig-stat-value">{impulsesResisted}</span>
+          <span className="ig-stat-label">Resisted</span>
+        </div>
+        <div className="ig-stat">
+          <span className="ig-stat-value">{successRate}%</span>
+          <span className="ig-stat-label">Success</span>
+        </div>
+      </section>
 
-      {/* Pending card */}
-      <Card>
-        <Text size="2" color="gray">
-          No pending purchases. You're doing great! 🎉
-        </Text>
-      </Card>
+      <p className="ig-note">No pending purchases. You're doing great.</p>
 
-      <Button size="3" onClick={handleClick}>
-        View Savings Report
-      </Button>
+      <button className="ig-cta" onClick={handleClick}>
+        View savings report
+      </button>
 
-      <Flex align="center" justify="center" gap="1">
-        <Text size="1" color="gray">Guarding since Jan 2025 •</Text>
-        <Text size="1" color="green" weight="medium">{count} sessions</Text>
-      </Flex>
-    </Flex>
+      <footer className="ig-footer">
+        <div className="ig-glyphs" aria-hidden="true">{GLYPHS}</div>
+        <p className="ig-microcopy">
+          Guarding since Jan 2025 · {count} sessions
+        </p>
+      </footer>
+    </div>
   );
 }
 

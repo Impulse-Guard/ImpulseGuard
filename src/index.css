@@ -1,20 +1,211 @@
-/* Popup base styles.
+/* Popup stylesheet.
  *
- * The brand's visual language lives in src/design/tokens.ts — the single source
- * of truth that both the React popup and the injected page overlays read from.
- * This file only needs the handful of values that have to exist as plain CSS:
- * the cream "old money" backdrop and the popup font family. Keep these in sync
- * with `color.background` and `font.family` in tokens.ts.
+ * The brand's visual language lives in src/design/tokens.ts — the single
+ * source of truth that both the React popup and the injected page overlays
+ * read from. CSS can't import TS, so the token values are repeated here;
+ * keep them in sync with tokens.ts when editing either file.
+ *
+ *   background #FBF9F4 · ink #0A0A0A · amber #D69200 · amber-bright #FFB300
+ *   rail #DCD7C9 · muted #78716C
+ *   sans "Hanken Grotesk" · mono "IBM Plex Mono"
  */
 
 html,
 body {
   margin: 0;
-  background: #fefdf8; /* tokens.ts -> color.background */
+  background: #FBF9F4;
+  color: #0A0A0A;
+  font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
 }
 
-.radix-themes {
-  --default-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
-  background: #fefdf8; /* tokens.ts -> color.background */
+.ig-popup {
+  width: 360px;
+  padding: 20px 24px 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header ------------------------------------------------------------ */
+
+.ig-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #DCD7C9;
+}
+
+.ig-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ig-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #FFB300;
+  color: #0A0A0A;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ig-wordmark {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ig-status {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #D69200;
+}
+
+/* ---- Hero stat --------------------------------------------------------- */
+
+.ig-hero {
+  padding: 18px 0 16px;
+  border-bottom: 1px solid #DCD7C9;
+}
+
+.ig-eyebrow {
+  margin: 0 0 6px;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #D69200;
+}
+
+.ig-figure {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.ig-weekly {
+  margin: 8px 0 0;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #78716C;
+}
+
+.ig-weekly-up {
+  color: #D69200;
+  font-weight: 600;
+}
+
+/* ---- Stats row --------------------------------------------------------- */
+
+.ig-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 16px 0;
+  border-bottom: 1px solid #DCD7C9;
+}
+
+.ig-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ig-stat + .ig-stat {
+  border-left: 1px solid #DCD7C9;
+}
+
+.ig-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ig-stat-label {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #78716C;
+}
+
+/* ---- Status note + CTA ------------------------------------------------- */
+
+.ig-note {
+  margin: 0;
+  padding: 14px 0;
+  font-size: 13px;
+  color: #78716C;
+}
+
+.ig-cta {
+  width: 100%;
+  padding: 13px 24px;
+  border: none;
+  border-radius: 9999px;
+  background: #0A0A0A;
+  color: #FBF9F4;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.ig-cta:hover {
+  background: #262626;
+}
+
+.ig-cta:active {
+  transform: scale(0.99);
+}
+
+/* ---- Footer ------------------------------------------------------------ */
+
+.ig-footer {
+  padding-top: 14px;
+  text-align: center;
+}
+
+.ig-glyphs {
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #DCD7C9;
+  user-select: none;
+}
+
+.ig-microcopy {
+  margin: 8px 0 0;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #78716C;
 }
