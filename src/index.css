@@ -3,29 +3,29 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    /* Money greens */
-    --color-primary: #16a34a;
-    --color-primary-dark: #15803d;
-    --color-secondary: #064e3b;
+  /* Money greens */
+  --color-primary: #16a34a;
+  --color-primary-dark: #15803d;
+  --color-secondary: #064e3b;
 
-    /* Gold accents */
-    --color-gold: #d4af37;
-    --color-gold-light: #f5d78e;
-    --color-tertiary: #ca8a04;
+  /* Gold accents */
+  --color-gold: #d4af37;
+  --color-gold-light: #f5d78e;
+  --color-tertiary: #ca8a04;
 
-    /* Warm cream backgrounds (like old money) */
-    --color-background: #fefdf8;
-    --color-background-muted: #f5f3eb;
-    --color-background-elevated: #ffffff;
-    --color-background-cash: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  /* Warm cream backgrounds (like old money) */
+  --color-background: #fefdf8;
+  --color-background-muted: #f5f3eb;
+  --color-background-elevated: #ffffff;
+  --color-background-cash: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
 
-    /* Rich text colors */
-    --color-text: #1a1a1a;
-    --color-text-muted: #52525b;
-    --color-text-success: #15803d;
-    --color-border: #e7e5df;
+  /* Rich text colors */
+  --color-text: #1a1a1a;
+  --color-text-muted: #52525b;
+  --color-text-success: #15803d;
+  --color-border: #e7e5df;
 
-    /* Savings indicator */
-    --color-savings: #22c55e;
-    --color-warning: #ef4444;
-  }
+  /* Savings indicator */
+  --color-savings: #22c55e;
+  --color-warning: #ef4444;
+}

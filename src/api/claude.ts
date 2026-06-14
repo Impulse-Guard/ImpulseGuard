@@ -65,7 +65,7 @@ export async function sendMessage(messages: ClaudeMessage[]): Promise<string> {
 // Categorize a purchase as normal or wasteful
 export async function categorizePurchase(
   productName: string,
-  price?: number,
+  price?: number
 ): Promise<CategorizationResult> {
   const prompt = `You are a purchase categorization assistant. Categorize this product as either "normal" (essentials like toiletries, groceries, household necessities, cleaning supplies, medicine, basic clothing) or "wasteful" (impulse purchases like entertainment, luxury items, hobbies, collectibles, gaming, electronics upgrades, designer items, cosmetics beyond basics).
 

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import type { StorageData } from './content/storage';
-import browser from 'webextension-polyfill';
-import { Button, Card, Text, Heading, Flex, Grid } from '@radix-ui/themes';
+import { useState, useEffect } from "react";
+import type { StorageData } from "./content/storage";
+import browser from "webextension-polyfill";
+import { Button, Card, Text, Heading, Flex, Grid } from "@radix-ui/themes";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,27 +12,27 @@ function App() {
   const [impulsesResisted, setImpulsesResisted] = useState(0);
 
   // Calculate success rate
-  const successRate = totalImpulses > 0 
-    ? Math.round((blockedPurchases / totalImpulses) * 100) 
-    : 0;
+  const successRate = totalImpulses > 0 ? Math.round((blockedPurchases / totalImpulses) * 100) : 0;
 
   // Load data from storage on mount
   useEffect(() => {
-    browser.storage.local.get([
-      'count', 
-      'moneySaved', 
-      'weeklySaved',
-      'blockedPurchases',
-      'totalImpulses',
-      'impulsesResisted'
-    ]).then((result: Partial<StorageData>) => {
-      setCount(result.count || 0);
-      setMoneySaved(result.moneySaved || 0);
-      setWeeklySaved(result.weeklySaved || 0);
-      setBlockedPurchases(result.blockedPurchases || 0);
-      setTotalImpulses(result.totalImpulses || 0);
-      setImpulsesResisted(result.impulsesResisted || 0);
-    });
+    browser.storage.local
+      .get([
+        "count",
+        "moneySaved",
+        "weeklySaved",
+        "blockedPurchases",
+        "totalImpulses",
+        "impulsesResisted",
+      ])
+      .then((result: Partial<StorageData>) => {
+        setCount(result.count || 0);
+        setMoneySaved(result.moneySaved || 0);
+        setWeeklySaved(result.weeklySaved || 0);
+        setBlockedPurchases(result.blockedPurchases || 0);
+        setTotalImpulses(result.totalImpulses || 0);
+        setImpulsesResisted(result.impulsesResisted || 0);
+      });
   }, []);
 
   // Listen for storage changes in real-time
@@ -72,19 +72,33 @@ function App() {
   };
 
   return (
-    <Flex direction="column" gap="4" p="5" style={{ width: '320px' }}>
+    <Flex direction="column" gap="4" p="5" style={{ width: "320px" }}>
       {/* Header */}
       <Flex direction="column" align="center" gap="1">
         <Heading size="6">💰 Impulse Guard</Heading>
-        <Text size="1" color="gray">Protecting your wallet</Text>
+        <Text size="1" color="gray">
+          Protecting your wallet
+        </Text>
       </Flex>
 
       {/* Money saved card */}
-      <Card size="3" style={{ background: 'linear-gradient(to bottom right, var(--green-10), var(--green-11))' }}>
+      <Card
+        size="3"
+        style={{ background: "linear-gradient(to bottom right, var(--green-10), var(--green-11))" }}
+      >
         <Flex direction="column" align="center" gap="1">
-          <Text size="1" style={{ textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.8 }}>Money Saved</Text>
-          <Text size="8" weight="bold" color="white">${moneySaved.toFixed(2)}</Text>
-          <Text size="1" style={{ opacity: 0.8 }}>↑ ${weeklySaved.toFixed(2)} this week</Text>
+          <Text
+            size="1"
+            style={{ textTransform: "uppercase", letterSpacing: "0.05em", opacity: 0.8 }}
+          >
+            Money Saved
+          </Text>
+          <Text size="8" weight="bold" color="white">
+            ${moneySaved.toFixed(2)}
+          </Text>
+          <Text size="1" style={{ opacity: 0.8 }}>
+            ↑ ${weeklySaved.toFixed(2)} this week
+          </Text>
         </Flex>
       </Card>
 
@@ -92,20 +106,32 @@ function App() {
       <Grid columns="3" gap="3">
         <Card>
           <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="amber">{blockedPurchases}</Text>
-            <Text size="1" color="gray">Blocked</Text>
+            <Text size="6" weight="bold" color="amber">
+              {blockedPurchases}
+            </Text>
+            <Text size="1" color="gray">
+              Blocked
+            </Text>
           </Flex>
         </Card>
         <Card>
           <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="yellow">{impulsesResisted}</Text>
-            <Text size="1" color="gray">Resisted</Text>
+            <Text size="6" weight="bold" color="yellow">
+              {impulsesResisted}
+            </Text>
+            <Text size="1" color="gray">
+              Resisted
+            </Text>
           </Flex>
         </Card>
         <Card>
           <Flex direction="column" align="center" gap="1">
-            <Text size="6" weight="bold" color="green">{successRate}%</Text>
-            <Text size="1" color="gray">Success</Text>
+            <Text size="6" weight="bold" color="green">
+              {successRate}%
+            </Text>
+            <Text size="1" color="gray">
+              Success
+            </Text>
           </Flex>
         </Card>
       </Grid>
@@ -113,7 +139,7 @@ function App() {
       {/* Pending card */}
       <Card>
         <Text size="2" color="gray">
-          No pending purchases. You're doing great! 🎉
+          No pending purchases. You&apos;re doing great! 🎉
         </Text>
       </Card>
 
@@ -122,8 +148,12 @@ function App() {
       </Button>
 
       <Flex align="center" justify="center" gap="1">
-        <Text size="1" color="gray">Guarding since Jan 2025 •</Text>
-        <Text size="1" color="green" weight="medium">{count} sessions</Text>
+        <Text size="1" color="gray">
+          Guarding since Jan 2025 •
+        </Text>
+        <Text size="1" color="green" weight="medium">
+          {count} sessions
+        </Text>
       </Flex>
     </Flex>
   );
