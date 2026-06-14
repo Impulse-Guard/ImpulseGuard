@@ -86,9 +86,8 @@ function showBlockedOverlay(
   itemPrice: number,
   isNewBlock: boolean,
   blockedAt: number,
-  reason?: string,
+  reason?: string
 ) {
-function showBlockedOverlay(itemPrice: number, isNewBlock: boolean, reason?: string) {
   const existing = document.getElementById("impulse-guard-overlay");
   if (existing) existing.remove();
 
