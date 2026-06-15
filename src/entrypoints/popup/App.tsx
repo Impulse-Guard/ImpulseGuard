@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import type { StorageData } from "./content/storage";
-import browser from "webextension-polyfill";
+import type { StorageData } from "@/content/storage";
+import { browser, type Browser } from "wxt/browser";
 import { Button, Card, Text, Heading, Flex, Grid } from "@radix-ui/themes";
 
 function App() {
@@ -37,7 +37,7 @@ function App() {
 
   // Listen for storage changes in real-time
   useEffect(() => {
-    const handleStorageChange = (changes: { [key: string]: browser.Storage.StorageChange }) => {
+    const handleStorageChange = (changes: { [key: string]: Browser.storage.StorageChange }) => {
       if (changes.moneySaved) {
         setMoneySaved((changes.moneySaved.newValue as number) || 0);
       }

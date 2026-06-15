@@ -1,3 +1,5 @@
+import { browser } from "wxt/browser";
+
 export interface StorageData {
   moneySaved: number;
   weeklySaved: number;
@@ -21,20 +23,20 @@ const DEFAULT_STORAGE: StorageData = {
 };
 
 export async function getStorageData(): Promise<StorageData> {
-  const result = await chrome.storage.local.get(Object.keys(DEFAULT_STORAGE));
+  const result = await browser.storage.local.get(Object.keys(DEFAULT_STORAGE));
   const data = { ...DEFAULT_STORAGE, ...result } as StorageData;
 
   // Migrate old array format to timestamp map
   if (Array.isArray(data.blockedItems)) {
     data.blockedItems = {};
-    await chrome.storage.local.set({ blockedItems: {} });
+    await browser.storage.local.set({ blockedItems: {} });
   }
 
   return data;
 }
 
 export async function updateStorage(updates: Partial<StorageData>): Promise<void> {
-  await chrome.storage.local.set(updates);
+  await browser.storage.local.set(updates);
 }
 
 export interface BlockResult {

@@ -1,7 +1,9 @@
-import { trackBlockedPurchase, BLOCK_DURATION_MS } from "./storage";
+import { defineContentScript } from "wxt/utils/define-content-script";
+import { trackBlockedPurchase, BLOCK_DURATION_MS } from "@/content/storage";
 import { categorizePurchase } from "@/api/claude";
 
-const ADD_TO_CART_XPATH = '//*[@id="test"]/button';
+const ADD_TO_CART_XPATH =
+  "/html/body/div[1]/div/div[3]/main/section[3]/div[4]/div[1]/div[2]/div/div[1]/div[2]/div[1]/form/button";
 const PRODUCT_NAME_XPATH = '//*[@id="root"]/div/div[3]/main/section[2]/div/h1';
 const PRICE_XPATH = '//*[@id="root"]/div/div[3]/main/section[3]/div[1]/div/div[1]/div/span[1]/span';
 
@@ -284,7 +286,11 @@ function showApprovedToast() {
   setTimeout(() => toast.remove(), 4000);
 }
 
-// Install blocker after page loads
-setTimeout(createBlockerDiv, 1000);
-
-console.log("[Impulse Guard] Content script loaded");
+export default defineContentScript({
+  matches: ["*://*.bestbuy.ca/*"],
+  runAt: "document_idle",
+  main() {
+    setTimeout(createBlockerDiv, 1000);
+    console.log("[Impulse Guard] Content script loaded");
+  },
+});
