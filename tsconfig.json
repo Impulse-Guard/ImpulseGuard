@@ -6,7 +6,6 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "skipLibCheck": true,
-    "types": ["chrome", "webextension-polyfill"],
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -20,5 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "extends": "./.wxt/tsconfig.json",
 }
